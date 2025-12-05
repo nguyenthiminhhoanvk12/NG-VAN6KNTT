@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { CURRICULUM } from './data/curriculum';
-import { generateQuiz, generateLitNews } from './services/geminiService';
+import { generateQuiz, generateLitNews, generateLessonContent } from './services/geminiService';
 import { QuizRunner } from './components/QuizRunner';
 import { NewsCard } from './components/NewsCard';
 import { ChatSupport } from './components/ChatSupport';
 import WritingAssistant from './components/WritingAssistant';
 import LessonCard from './components/LessonCard';
-import { AppScreen, QuizData, QuizMode, LitNews } from './types';
+import LessonView from './components/LessonView';
+import { AppScreen, QuizData, QuizMode, LitNews, Lesson, LessonContent } from './types';
 import { BookOpen, AlertCircle, Loader2, PenTool, Layout, X, Moon, Sun } from 'lucide-react';
 
 const THEME_STORAGE_KEY = 'lit6_theme_preference';
@@ -14,7 +15,8 @@ const THEME_STORAGE_KEY = 'lit6_theme_preference';
 export default function App() {
   const [screen, setScreen] = useState<AppScreen>(AppScreen.DASHBOARD);
   const [mode, setMode] = useState<QuizMode>('ASSESSMENT');
-  const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
+  const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
+  const [lessonContent, setLessonContent] = useState<LessonContent | null>(null);
   const [quizData, setQuizData] = useState<QuizData | null>(null);
   const [error, setError] = useState<string | null>(null);
   
@@ -64,18 +66,31 @@ export default function App() {
     loadNews();
   }, []);
 
-  const handleLessonSelect = async (lessonId: string, title: string, desc: string = "") => {
+  const handleLessonSelect = async (lesson: Lesson) => {
     setScreen(AppScreen.LOADING);
-    setActiveLessonId(lessonId);
+    setActiveLesson(lesson);
     setError(null);
 
     try {
-      const data = await generateQuiz(title, desc);
+      const content = await generateLessonContent(lesson.title, lesson.description || "");
+      setLessonContent(content);
+      setScreen(AppScreen.LESSON);
+    } catch (err: any) {
+      setError("Hệ thống đang bận. Vui lòng thử lại sau.");
+      setScreen(AppScreen.DASHBOARD);
+    }
+  };
+
+  const handleStartQuiz = async () => {
+    if (!activeLesson) return;
+    setScreen(AppScreen.LOADING);
+    try {
+      const data = await generateQuiz(activeLesson.title, activeLesson.description || "");
       setQuizData(data);
       setScreen(AppScreen.QUIZ);
     } catch (err: any) {
       setError("Hệ thống đang bận. Vui lòng thử lại sau.");
-      setScreen(AppScreen.DASHBOARD);
+      setScreen(AppScreen.LESSON); // Return to lesson view on error
     }
   };
 
@@ -84,9 +99,20 @@ export default function App() {
       return (
         <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-8">
            <Loader2 className="w-12 h-12 text-orange-500 animate-spin mb-4" />
-           <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 serif">Đang soạn giáo án...</h3>
-           <p className="text-stone-500 dark:text-stone-400 mt-2">Thầy AI đang chuẩn bị câu hỏi cho em.</p>
+           <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 serif">Đang tải dữ liệu...</h3>
+           <p className="text-stone-500 dark:text-stone-400 mt-2">Thầy AI đang chuẩn bị bài giảng cho em.</p>
         </div>
+      );
+    }
+
+    if (screen === AppScreen.LESSON && activeLesson && lessonContent) {
+      return (
+        <LessonView 
+          lesson={activeLesson}
+          content={lessonContent}
+          onStartQuiz={handleStartQuiz}
+          onBack={() => setScreen(AppScreen.DASHBOARD)}
+        />
       );
     }
 
@@ -96,7 +122,7 @@ export default function App() {
           quizData={quizData} 
           mode={mode}
           onFinish={() => { setScreen(AppScreen.DASHBOARD); setQuizData(null); }} 
-          onBack={() => setScreen(AppScreen.DASHBOARD)}
+          onBack={() => setScreen(AppScreen.LESSON)} // Back to lesson view
         />
       );
     }
@@ -152,7 +178,7 @@ export default function App() {
                         unit={chapter} 
                         lesson={lesson} 
                         isActive={false} 
-                        onClick={() => handleLessonSelect(lesson.id, lesson.title, lesson.description)} 
+                        onClick={() => handleLessonSelect(lesson)} 
                      />
                   ))}
                </div>

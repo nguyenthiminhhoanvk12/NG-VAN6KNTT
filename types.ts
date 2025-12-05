@@ -75,12 +75,19 @@ export interface LitNews {
   imageUrl?: string;
 }
 
+export interface LessonContent {
+  title: string;
+  summary: string;
+  keyPoints: string[];
+}
+
 export enum AppScreen {
   DASHBOARD = 'DASHBOARD',
+  LESSON = 'LESSON',
   QUIZ = 'QUIZ',
   LOADING = 'LOADING',
   RESULT = 'RESULT',
-  WRITING = 'WRITING', // Added writing screen
+  WRITING = 'WRITING',
 }
 
 export type QuizMode = 'ASSESSMENT' | 'PRACTICE';

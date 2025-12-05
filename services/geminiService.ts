@@ -1,5 +1,5 @@
-import { GoogleGenAI, Type, Content } from "@google/genai";
-import { QuizData, LitNews, QuizQuestion } from "../types";
+import { GoogleGenAI, Type, Content, Modality } from "@google/genai";
+import { QuizData, LitNews, QuizQuestion, LessonContent } from "../types";
 
 let genAIInstance: GoogleGenAI | null = null;
 
@@ -344,5 +344,69 @@ export const generateQuizForLesson = async (lessonTitle: string): Promise<QuizQu
   } catch (e) {
     console.error(e);
     return [];
+  }
+};
+
+export const generateLessonContent = async (topic: string, description: string): Promise<LessonContent> => {
+  try {
+    const ai = getAI();
+    const prompt = `
+      Soạn nội dung bài học cho học sinh lớp 6 về: "${topic} - ${description}".
+      Yêu cầu:
+      1. Tóm tắt nội dung chính (khoảng 100-150 chữ), giọng văn kể chuyện hấp dẫn hoặc phân tích nhẹ nhàng, dễ hiểu.
+      2. Rút ra 3-5 ý chính (Ghi nhớ) ngắn gọn.
+      Trả về JSON: { "title": "...", "summary": "...", "keyPoints": ["...", "..."] }
+    `;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING },
+            summary: { type: Type.STRING },
+            keyPoints: { type: Type.ARRAY, items: { type: Type.STRING } }
+          },
+          required: ["title", "summary", "keyPoints"]
+        }
+      }
+    });
+
+    return JSON.parse(cleanJsonString(response.text || "{}")) as LessonContent;
+  } catch (error) {
+    console.error("Error generating lesson content:", error);
+    return {
+      title: topic,
+      summary: "Hiện không thể tải nội dung bài học. Em hãy thử lại sau nhé.",
+      keyPoints: []
+    };
+  }
+};
+
+export const generateSpeech = async (text: string): Promise<string> => {
+  try {
+    const ai = getAI();
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash-preview-tts",
+      contents: [{ parts: [{ text }] }],
+      config: {
+        responseModalities: [Modality.AUDIO],
+        speechConfig: {
+          voiceConfig: {
+            prebuiltVoiceConfig: { voiceName: 'Kore' },
+          },
+        },
+      },
+    });
+
+    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    if (!base64Audio) throw new Error("No audio data returned");
+    return base64Audio;
+  } catch (error) {
+    console.error("TTS Error:", error);
+    throw error;
   }
 };
