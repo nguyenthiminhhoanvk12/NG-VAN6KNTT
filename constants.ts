@@ -20,6 +20,13 @@ export const CURRICULUM: Unit[] = [
         description: 'Trích "Hoàng tử bé" - Antoine de Saint-Exupéry',
         topic: 'Truyện đồng thoại',
         texts: ['Nếu cậu muốn có một người bạn']
+      },
+      {
+        id: 'u1-l3',
+        title: 'Bắt nạt',
+        description: 'Thơ - Nguyễn Thế Hoàng Linh',
+        topic: 'Thơ',
+        texts: ['Bắt nạt']
       }
     ]
   },
@@ -42,6 +49,13 @@ export const CURRICULUM: Unit[] = [
         description: 'Thơ - Rabindranath Tagore',
         topic: 'Thơ',
         texts: ['Mây và sóng']
+      },
+      {
+        id: 'u2-l3',
+        title: 'Bức tranh của em gái tôi',
+        description: 'Truyện ngắn - Tạ Duy Anh',
+        topic: 'Truyện ngắn',
+        texts: ['Bức tranh của em gái tôi']
       }
     ]
   },
@@ -54,7 +68,7 @@ export const CURRICULUM: Unit[] = [
       {
         id: 'u3-l1',
         title: 'Cô bé bán diêm',
-        description: 'Truyện cổ tích - Hans Christian Andersen',
+        description: 'Truyện cổ tích - Andersen',
         topic: 'Truyện cổ tích',
         texts: ['Cô bé bán diêm']
       },
@@ -64,6 +78,13 @@ export const CURRICULUM: Unit[] = [
         description: 'Truyện ngắn - Thạch Lam',
         topic: 'Truyện ngắn',
         texts: ['Gió lạnh đầu mùa']
+      },
+      {
+        id: 'u3-l3',
+        title: 'Con chào mào',
+        description: 'Thơ - Mai Văn Phấn',
+        topic: 'Thơ',
+        texts: ['Con chào mào']
       }
     ]
   },
@@ -82,10 +103,17 @@ export const CURRICULUM: Unit[] = [
       },
       {
         id: 'u4-l2',
-        title: 'Việt Nam quê hương ta',
-        description: 'Thơ - Nguyễn Đình Thi',
+        title: 'Chuyện cổ nước mình',
+        description: 'Thơ - Lâm Thị Mỹ Dạ',
         topic: 'Thơ lục bát',
-        texts: ['Việt Nam quê hương ta']
+        texts: ['Chuyện cổ nước mình']
+      },
+      {
+        id: 'u4-l3',
+        title: 'Cây tre Việt Nam',
+        description: 'Kí - Thép Mới',
+        topic: 'Kí',
+        texts: ['Cây tre Việt Nam']
       }
     ]
   },
@@ -108,9 +136,67 @@ export const CURRICULUM: Unit[] = [
         description: 'Kí - Hà My',
         topic: 'Kí',
         texts: ['Hang Én']
+      },
+      {
+        id: 'u5-l3',
+        title: 'Cửu Long Giang ta ơi',
+        description: 'Thơ - Nguyên Hồng',
+        topic: 'Thơ',
+        texts: ['Cửu Long Giang ta ơi']
+      }
+    ]
+  },
+  {
+    id: 'unit-6',
+    number: 6,
+    title: 'Chuyện kể về những người anh hùng',
+    theme: 'Truyền thuyết',
+    lessons: [
+      {
+        id: 'u6-l1',
+        title: 'Thánh Gióng',
+        description: 'Truyền thuyết',
+        topic: 'Truyền thuyết',
+        texts: ['Thánh Gióng']
+      },
+      {
+        id: 'u6-l2',
+        title: 'Sơn Tinh, Thủy Tinh',
+        description: 'Truyền thuyết',
+        topic: 'Truyền thuyết',
+        texts: ['Sơn Tinh, Thủy Tinh']
+      }
+    ]
+  },
+  {
+    id: 'unit-7',
+    number: 7,
+    title: 'Thế giới cổ tích',
+    theme: 'Truyện cổ tích',
+    lessons: [
+      {
+        id: 'u7-l1',
+        title: 'Thạch Sanh',
+        description: 'Truyện cổ tích',
+        topic: 'Truyện cổ tích',
+        texts: ['Thạch Sanh']
+      },
+      {
+        id: 'u7-l2',
+        title: 'Cây khế',
+        description: 'Truyện cổ tích',
+        topic: 'Truyện cổ tích',
+        texts: ['Cây khế']
+      },
+      {
+        id: 'u7-l3',
+        title: 'Vua chích chòe',
+        description: 'Truyện cổ tích',
+        topic: 'Truyện cổ tích',
+        texts: ['Vua chích chòe']
       }
     ]
   }
 ];
 
-export const WELCOME_MESSAGE = "Chào em! Thầy là trợ lý ảo Văn học. Em muốn ôn tập bài nào hôm nay, hay cần giúp đỡ về kỹ năng viết đoạn văn? Hãy chọn một bài học bên trái để bắt đầu nhé!";
+export const WELCOME_MESSAGE = "Chào em! Thầy là trợ lý ảo Văn học. Em muốn ôn tập bài nào trong 7 bài học hôm nay? Hãy chọn một bài học bên dưới để bắt đầu nhé!";
